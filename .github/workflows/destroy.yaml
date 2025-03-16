@@ -1,0 +1,97 @@
+
+name : 'AWS-WAFR-Infra-WAF-Pipeline-Destroy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      infra_env:
+        type: choice
+        description: 'Select Subscription'
+        options:
+          - 'CEQ-DEVOPS-SANDBOX'
+     
+    
+permissions: read-all
+env:
+  REGION: us-east-1
+ 
+
+
+jobs:
+  terraform-plan:
+    name: "Terraform Scan & Plan"
+    runs-on:  ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    permissions:
+      contents: read
+      security-events: write 
+      actions: read
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.REGION }}                         
+
+      #- name: Test with Checkov
+       # id: checkov
+       # uses: bridgecrewio/checkov-action@master
+       # with:
+          # directory: . 
+           #framework: terraform 
+          # download_external_modules: true
+          # file: ./main.tf
+
+      - name: "Setting Environment"
+        env:
+         INFRA_ENV: ${{ github.event.inputs.infra_env }}
+         
+        run: |
+          if [ "$INFRA_ENV" == "CEQ-DEVOPS-SANDBOX" ]; then
+           echo "project_id=ceq-devops-sandbox" >> $GITHUB_ENV
+           echo "ENV=sandbox" >> $GITHUB_ENV
+           echo "bucket=aws-landing-zone-bucket" >> $GITHUB_ENV
+           echo "tfstatefile=landing-zone/terraform.tfstate" >> $GITHUB_ENV
+           # echo "dynamodbtable=aws_athena_db" >> $GITHUB_ENV
+          elif [ "$INFRA_ENV" == "nonprod" ]; then
+            echo "project_id=ceq-devops-sandbox" >> $GITHUB_ENV
+            echo "ENV=nonprod" >> $GITHUB_ENV
+            echo "bucket=aws-wafr-pipeline-tf-state" >> $GITHUB_ENV
+            echo "tfstatefile=AWS-Wafr-Event-nonprod/terraform.tfstate" >> $GITHUB_ENV
+            echo "dynamodbtable=AWS-Wafr-WAF-Gateway" >> $GITHUB_ENV
+          else
+             echo "environment not supported"
+             exit 1
+          fi
+            
+      - name: Setup git global config
+        run: git config --global url."https://oauth2:${{secrets.CEQ_GHREPOSVCUSER_PAT_TOKEN}}@github.com".insteadOf https://github.com   
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.8.2
+          terraform_wrapper: false
+      
+      - name: Terraform Init
+        id: init
+        run:
+          terraform init -reconfigure
+         -backend-config="bucket=$bucket" 
+         -backend-config="key=$tfstatefile" 
+        #  -backend-config="dynamodb_table=$dynamodbtable"
+
+      - name: Terraform destroy
+        id: destroy
+        run: terraform destroy -auto-approve -var-file="$ENV/terraform.tfvars" -input=false  
+         
+ 

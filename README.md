@@ -1,2 +1,1 @@
-# Aws-Landing-zone
-Aws-Landing-zone
+# ceq_tf_landing_zone_sample
