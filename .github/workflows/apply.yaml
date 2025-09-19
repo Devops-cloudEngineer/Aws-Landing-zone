@@ -10,7 +10,9 @@ on:
           - "CEQ-DEVOPS-SANDBOX"
       
 
-permissions: read-all
+permissions:
+      id-token: write
+      contents: read
 env:
   REGION: us-east-1
  
@@ -35,9 +37,12 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ env.REGION }}
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          # aws-region: ${{ env.REGION }}
+          role-to-assume: arn:aws:iam::154292417400:role/github-connect-role
+          role-session-name: "samplerolesession"
+          aws-region: us-east-1
 
       - name: Test with Checkov
         id: checkov
@@ -55,7 +60,7 @@ jobs:
           if [ "$INFRA_ENV" == "CEQ-DEVOPS-SANDBOX" ]; then
            echo "project_id=ceq-devops-sandbox" >> $GITHUB_ENV
            echo "ENV=sandbox" >> $GITHUB_ENV
-           echo "bucket=aws-landing-zone-bucket" >> $GITHUB_ENV
+           echo "bucket=aws-landing-zone-bucket-paras" >> $GITHUB_ENV
            echo "tfstatefile=landing-zone/terraform.tfstate" >> $GITHUB_ENV
             #echo "dynamodbtable=aws_athena_db" >> $GITHUB_ENV
           elif [ "$INFRA_ENV" == "nonprod" ]; then
@@ -69,8 +74,8 @@ jobs:
              exit 1
           fi
 
-      - name: Setup git global config
-        run: git config --global url."https://oauth2:${{secrets.CEQ_GHREPOSVCUSER_PAT_TOKEN}}@github.com".insteadOf https://github.com
+      # - name: Setup git global config
+      #   run: git config --global url."https://oauth2:${{secrets.CEQ_GHREPOSVCUSER_PAT_TOKEN}}@github.com".insteadOf https://github.com
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -103,13 +108,13 @@ jobs:
           name: plan
           path: ${{ github.workspace }}/downloaded_plan.json
 
-      - name: Execute Scan Template Script
-        run: |
-          python ./visionapi.py
-        env:
-          TOKEN: ${{ secrets.API_TOKEN }}
+      # - name: Execute Scan Template Script
+      #   run: |
+      #     python ./visionapi.py
+      #   env:
+      #     TOKEN: ${{ secrets.API_TOKEN }}
 
-  terraform-apply:
+  # terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: ["terraform-plan"]
@@ -153,8 +158,8 @@ jobs:
              exit 1
           fi
 
-      - name: Setup git global config
-        run: git config --global url."https://oauth2:${{secrets.CEQ_GHREPOSVCUSER_PAT_TOKEN}}@github.com".insteadOf https://github.com
+      # - name: Setup git global config
+      #   run: git config --global url."https://oauth2:${{secrets.CEQ_GHREPOSVCUSER_PAT_TOKEN}}@github.com".insteadOf https://github.com
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
