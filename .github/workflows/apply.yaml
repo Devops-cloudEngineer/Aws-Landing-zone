@@ -97,13 +97,13 @@ jobs:
         run: terraform show -json plan.tfplan > plan.json
 
       - name: Upload plan.json to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: plan
           path: ${{ github.workspace }}/plan.json
 
       - name: Download plan.json from artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: plan
           path: ${{ github.workspace }}/downloaded_plan.json
