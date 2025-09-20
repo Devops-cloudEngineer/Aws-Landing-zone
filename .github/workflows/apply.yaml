@@ -25,11 +25,6 @@ jobs:
       run:
         shell: bash
 
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
