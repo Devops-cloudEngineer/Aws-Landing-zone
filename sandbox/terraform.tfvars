@@ -68,7 +68,7 @@ aws_service_access_principals = [
 # AWS Accounts
 # whether to create delegated config account or not 
 delegated_config  = true   # whether to create delegated config account or not 
-delegated_config_account   = "881490103380"
+delegated_config_account   = "154292417400"
 service_principal_config = "config.amazonaws.com"  
 
 
@@ -195,7 +195,7 @@ sns_variable ={
 #Creating Guard duty for organization to monitor all Accounts, Adding additional features to guard from a main admin account#
 
 guardduty_enable                 = true
-admin_account_id                 = "881490103380"
+admin_account_id                 = "154292417400"
 auto_enable_organization_members = "NEW"
 create_additional_feature        = true
 additional_feature_name          = ["RUNTIME_MONITORING", "RDS_LOGIN_EVENTS", "LAMBDA_NETWORK_LOGS"]
@@ -222,10 +222,10 @@ monthly_billing_threshold   =  0.01
 
 #----------------Security Hub Input----------------#
 #Input Delegated Account ID and Member accounts on which we want securitiy hub to be enabled.
-delegated_admin_id = "881490103380"  # Replace with your delegated admin account ID
+delegated_admin_id = "154292417400"  # Replace with your delegated admin account ID
 member_account_ids = [
     "529088275969",
-   # "881490103380"
+   # "154292417400"
 ]
 #Provide optional Arguments during enabling securiy hub .
 enable_default_standards  = true
@@ -239,17 +239,17 @@ auto_enable_security_hub    = true
  create_iam_role = true
  confi_name = "wafr-config"
  global_resource_collector_region = "us-east-1"
- central_resource_collector_account = "881490103380"
+ central_resource_collector_account = "154292417400"
  account_aggregation_source = {
    account_ids = []
    regions     = ["us-east-1"]
  }
  delivery_bucket_name = "wafr-config-bucket"
  #account_id =  "529088275969"
- #child_resource_collector_accounts = ["881490103380"]
+ #child_resource_collector_accounts = ["154292417400"]
  create_organization_aggregator_iam_role = true
  #is_organization_aggregator = true
- #member_account_id = "881490103380"
+ #member_account_id = "154292417400"
 
 
 

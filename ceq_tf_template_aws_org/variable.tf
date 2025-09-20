@@ -13,7 +13,7 @@ variable "delegated_config" {
 variable "delegated_config_account" {
   description = "Delegated config account id."
   type        = string
-  default     = "881490103380"
+  default     = "154292417400"
 }
 
 

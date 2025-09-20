@@ -20,7 +20,7 @@ provider "aws" {
   alias  = "delegated_admin"
   region = var.region  # Change to your desired region
   assume_role {
-    role_arn = "arn:aws:iam::881490103380:role/OrganizationAccountAccessRole"  # Replace with the ARN of your assume role
+    role_arn = "arn:aws:iam::154292417400:role/OrganizationAccountAccessRole"  # Replace with the ARN of your assume role
   }
 }
 
