@@ -36,7 +36,7 @@ output "key_arn" {
   
 }
 
-output "admin_account_id" {
-  value = module.guardduty.admin_account_id
-}
+# output "admin_account_id" {
+#   value = module.guardduty.admin_account_id
+# }
 

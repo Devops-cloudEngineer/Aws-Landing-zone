@@ -269,7 +269,7 @@ module "s3" {
     }
   }
   attach_policy = true
-  policy        = each.key == "cloudtrail" ? data.aws_iam_policy_document.cloudtrail_policy["cloudtrail"].json : each.key == "guard_duty" ? data.aws_iam_policy_document.guardduty_policy["guard_duty"].json : each.key == "config" ? data.aws_iam_policy_document.config_policy["config"].json : ""
+  policy        = each.key == "cloudtrail" ? data.aws_iam_policy_document.cloudtrail_policy["cloudtrail"].json : each.key == "config" ? data.aws_iam_policy_document.config_policy["config"].json : ""
 }
 
 #------------------------------------ Guard Duty---------------------------------#
