@@ -138,48 +138,48 @@ data "aws_iam_policy_document" "cloudtrail_policy" {
   }
 
 #-------------------------- Gurad Duty Bucket Policy--------------------------#
-data "aws_iam_policy_document" "guardduty_policy" {
- for_each = { for k, v in var.s3_variable : k => v if k == "guard_duty" }
-  statement {
-    sid = "Allow PutObject"
-    actions = [
-      "s3:PutObject"
-    ]
+# data "aws_iam_policy_document" "guardduty_policy" {
+#  for_each = { for k, v in var.s3_variable : k => v if k == "guard_duty" }
+#   statement {
+#     sid = "Allow PutObject"
+#     actions = [
+#       "s3:PutObject"
+#     ]
 
-    resources = [
-      "arn:aws:s3:::${each.value.bucket_name}/*"
-    ]
+#     resources = [
+#       "arn:aws:s3:::${each.value.bucket_name}/*"
+#     ]
 
-    principals {
-      type        = "Service"
-      identifiers = ["guardduty.amazonaws.com"]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "s3:x-amz-acl"
-      values   = ["bucket-owner-full-control"]
-    }
-  }
+#     principals {
+#       type        = "Service"
+#       identifiers = ["guardduty.amazonaws.com"]
+#     }
+#     condition {
+#       test     = "StringLike"
+#       variable = "s3:x-amz-acl"
+#       values   = ["bucket-owner-full-control"]
+#     }
+#   }
 
-  statement {
-    sid = "Allow GetBucketLocation"
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:GetBucketAcl",
-      "s3:ListBucket"
-    ]
+#   statement {
+#     sid = "Allow GetBucketLocation"
+#     actions = [
+#       "s3:GetBucketLocation",
+#       "s3:GetBucketAcl",
+#       "s3:ListBucket"
+#     ]
 
-    resources = [
-      "arn:aws:s3:::${each.value.bucket_name}"
+#     resources = [
+#       "arn:aws:s3:::${each.value.bucket_name}"
 
-    ]
+#     ]
 
-    principals {
-      type        = "Service"
-      identifiers = ["guardduty.amazonaws.com"]
-    }
-  }
-}
+#     principals {
+#       type        = "Service"
+#       identifiers = ["guardduty.amazonaws.com"]
+#     }
+#   }
+# }
 
 #-------------------------------Config Bucket Policy-----------------------------#
 data "aws_iam_policy_document" "config_policy" {
@@ -274,32 +274,32 @@ module "s3" {
 
 #------------------------------------ Guard Duty---------------------------------#
 
-module "guardduty" {
-  source                           = "./ceq_tf_template_aws_guardduty"
-  depends_on                       = [module.kms]
-    providers = { 
-    aws = aws,
-    aws.delegated_admin = aws.delegated_admin # Use the delegated_admin provider for this module
-  }
-  member_accounts                  = var.member_accounts
-  guardduty_enable                 = var.guardduty_enable
-  finding_publishing_frequency     = var.finding_publishing_frequency
-  admin_account_id                 = var.admin_account_id
-  auto_enable_organization_members = var.auto_enable_organization_members
-  invite                           = var.invite
-  invitation_message               = var.invitation_message
-  disable_email_notification       = var.disable_email_notification
-  enable_s3_logs                   = var.enable_s3_logs
-  enable_kubernetes_audit_logs     = var.enable_kubernetes_audit_logs
-  enable_ebs_volumes_scan          = var.enable_ebs_volumes_scan
-  create_additional_feature        = var.create_additional_feature
-  additional_feature_name          = var.additional_feature_name
-  additional_configuration_name    = var.additional_configuration_name
-  gd_publishing_dest_bucket_arn    = module.s3["guard_duty"].s3_bucket_arn
-  gd_kms_key_arn                   = module.kms.key_arn
-  management_acc_email = var.management_acc_email
-  management_acc = var.management_acc
-}
+# module "guardduty" {
+#   source                           = "./ceq_tf_template_aws_guardduty"
+#   depends_on                       = [module.kms]
+#     providers = { 
+#     aws = aws,
+#     aws.delegated_admin = aws.delegated_admin # Use the delegated_admin provider for this module
+#   }
+#   member_accounts                  = var.member_accounts
+#   guardduty_enable                 = var.guardduty_enable
+#   finding_publishing_frequency     = var.finding_publishing_frequency
+#   admin_account_id                 = var.admin_account_id
+#   auto_enable_organization_members = var.auto_enable_organization_members
+#   invite                           = var.invite
+#   invitation_message               = var.invitation_message
+#   disable_email_notification       = var.disable_email_notification
+#   enable_s3_logs                   = var.enable_s3_logs
+#   enable_kubernetes_audit_logs     = var.enable_kubernetes_audit_logs
+#   enable_ebs_volumes_scan          = var.enable_ebs_volumes_scan
+#   create_additional_feature        = var.create_additional_feature
+#   additional_feature_name          = var.additional_feature_name
+#   additional_configuration_name    = var.additional_configuration_name
+#   gd_publishing_dest_bucket_arn    = module.s3["guard_duty"].s3_bucket_arn
+#   gd_kms_key_arn                   = module.kms.key_arn
+#   management_acc_email = var.management_acc_email
+#   management_acc = var.management_acc
+# }
 
 #--------------------------------------Billing Alarm-------------------------------#
 module "billing_alarm" {

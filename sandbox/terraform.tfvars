@@ -143,11 +143,11 @@ s3_variable = {
     force_destroy = true
      }
 
-   "guard_duty" = {
-      bucket_name = "wafr-guardduty-bucket"
-      force_destroy = true
+  #  "guard_duty" = {
+  #     bucket_name = "wafr-guardduty-bucket"
+  #     force_destroy = true
         
-    }
+  #   }
     "config" = {
       bucket_name = "wafr-config-bucket"
       force_destroy = true
